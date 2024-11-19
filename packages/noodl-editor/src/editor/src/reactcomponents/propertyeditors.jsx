@@ -1,3 +1,21 @@
+// This file contains React components for property editors used in the Noodl editor
+
+// ColorPicker - Component for selecting colors
+// FontPicker - Component for selecting fonts 
+// PopupLayer - Component for displaying popup/modal content
+
+// GenericInputProperty - A reusable input component that:
+// - Maintains internal input state
+// - Calls onChange when value changes
+// - Supports different input types
+// - Has label and input layout
+// - Handles focus/blur events
+// - Submits on Enter key
+
+// UnitDropdown - Component for selecting units (e.g. px, %, em)
+// - Shows/hides dropdown options
+// - Calls onChange when selection changes
+
 const React = require('react');
 const { useState, useEffect, useRef } = require('react');
 
@@ -6,6 +24,7 @@ const FontPicker = require('../views/panels/propertyeditor/fontpicker').default;
 const PopupLayer = require('../views/popuplayer');
 
 require('./propertyeditors.css');
+
 
 const GenericInputProperty = React.forwardRef((props, ref) => {
   const [inputValue, setInputValue] = useState(props.value || '');
