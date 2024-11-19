@@ -16,16 +16,6 @@ import { UnsafeStyleProps } from '@noodl-core-ui/types/global';
 
 import css from './LauncherApp.module.scss';
 
-/**
- * Returns whether we are running inside the storybook editor canvas.
- *
- * @returns
- */
-export function insideFrame() {
-  // // The page is in an iframe
-  return window.location !== window.parent.location;
-}
-
 export interface LauncherSectionProps extends UnsafeStyleProps {
   hasTopBorder?: boolean;
 
