@@ -10,12 +10,11 @@ module.exports = merge(shared, {
     production: true
   }),
   entry: {
-    './src/main/main': './src/main/main.js'
+    'main': './src/main/main.js'
   },
   output: {
-    path: path.join(__dirname, '.././'),
-    filename: '[name].bundle.js',
-    // https://github.com/webpack/webpack/issues/1114
+    path: path.join(__dirname, '../dist'),
+    filename: '[name].js',
     libraryTarget: 'commonjs2'
   }
 });

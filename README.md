@@ -6,11 +6,20 @@ OpenNoodl will aim to stay entirely in sync with the original repository, includ
 
 # Installing OpenNoodl
 
-## One-click install
+## Downloads
 
-* [Code Crusher 1.1.0 for MacOS Intel](https://github.com/The-Low-Code-Foundation/OpenNoodl/releases/download/release/OpenNoodl.1.1.0.Apple.Intel.dmg)
-* [Code Crusher 1.1.0 for MacOS Silicon](https://github.com/The-Low-Code-Foundation/OpenNoodl/releases/download/release/OpenNoodl.1.1.0.Apple.Silicon.dmg)
-* [Code Crusher 1.1.0 for Windows](https://github.com/The-Low-Code-Foundation/OpenNoodl/releases/download/release/OpenNoodl.1.1.0.Windows.exe)
+### Beta/Development Version (1.1.0-beta.1)
+* [OpenNoodl Fork 1.1.0-beta.1 for Windows (MSI)](packages/dist/OpenNoodl%20Fork%201.1.0-beta.1.msi)
+* [OpenNoodl Fork 1.1.0-beta.1 for Windows (EXE)](packages/dist/OpenNoodl%20Fork%20Setup%201.1.0-beta.1.exe)
+
+Note: This is a beta fork of OpenNoodl with experimental features. For the stable version, please visit the [main OpenNoodl repository](https://github.com/The-Low-Code-Foundation/OpenNoodl).
+
+### Building for Other Platforms
+To build installers for other platforms:
+* macOS: Build must be done on a Mac
+* Linux: Build must be done on a Linux machine
+
+See [Multi-Platform Build](https://www.electron.build/multi-platform-build) for more information.
 
 # Getting started
 

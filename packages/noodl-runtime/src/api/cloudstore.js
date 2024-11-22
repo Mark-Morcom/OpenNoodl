@@ -3,6 +3,7 @@ const Model = require('../model');
 const Collection = require('../collection');
 const CloudFile = require('./cloudfile');
 const EventEmitter = require('../events');
+const { getS3Client } = require('../services/s3-client');
 
 const _protectedFields = {
   _common: ['_createdAt', '_updatedAt', 'objectId'],
@@ -184,7 +185,6 @@ class CloudStore {
       else if (group['max'] !== undefined) _g['$max'] = '$' + group['max'];
       else if (group['min'] !== undefined) _g['$min'] = '$' + group['min'];
       else if (group['distinct'] !== undefined) _g['$addToSet'] = '$' + group['distinct'];
-
       grouping[k] = _g;
     });
 
@@ -416,30 +416,50 @@ class CloudStore {
   }
 
   uploadFile(options) {
-    this._makeRequest('/files/' + options.file.name, {
-      method: 'POST',
-      content: options.file,
-      contentType: options.file.type,
-      success: (response) => options.success(Object.assign({}, options.data, response)),
-      error: (err) => options.error(err),
-      onUploadProgress: options.onUploadProgress
+    const { file, onUploadProgress } = options;
+
+    // Get S3 config from cloud services
+    const cloudServices = NoodlRuntime.instance.getMetaData('cloudservices');
+    const s3Client = getS3Client({
+      region: cloudServices.s3Region || 'us-east-1',
+      credentials: {
+        accessKeyId: cloudServices.s3AccessKeyId,
+        secretAccessKey: cloudServices.s3SecretAccessKey
+      }
+    });
+
+    // Upload using the modern S3 client
+    s3Client.uploadFile({
+      Bucket: cloudServices.s3Bucket,
+      Key: `${Date.now()}-${file.name}`,
+      Body: file,
+      ContentType: file.type
+    }).on('progress', (progress) => {
+      onUploadProgress && onUploadProgress(progress);
+    }).on('success', (response) => {
+      options.success(response);
+    }).on('error', (err) => {
+      options.error(err);
     });
   }
 
-  /**
-   * Users holding the master key are allowed to delete files
-   *
-   * @param {{
-   *    file: {
-   *      name: string;
-   *    }
-   * }} options
-   */
   deleteFile(options) {
-    this._makeRequest('/files/' + options.file.name, {
-      method: 'DELETE',
-      success: (response) => options.success(Object.assign({}, options.data, response)),
-      error: (err) => options.error(err)
+    const cloudServices = NoodlRuntime.instance.getMetaData('cloudservices');
+    const s3Client = getS3Client({
+      region: cloudServices.s3Region || 'us-east-1',
+      credentials: {
+        accessKeyId: cloudServices.s3AccessKeyId,
+        secretAccessKey: cloudServices.s3SecretAccessKey
+      }
+    });
+
+    s3Client.deleteFile({
+      Bucket: cloudServices.s3Bucket,
+      Key: options.file.name
+    }).on('success', () => {
+      options.success();
+    }).on('error', (err) => {
+      options.error(err);
     });
   }
 }

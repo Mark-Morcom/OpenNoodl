@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "declaration": true,
+    "baseUrl": ".",
+    "paths": {
+      "@noodl-core-ui/*": ["../noodl-core-ui/src/*"],
+      "@noodl-models/*": ["../noodl-models/src/*"],
+      "@noodl-utils/*": ["../noodl-utils/src/*"],
+      "@noodl-hooks/*": ["../noodl-hooks/src/*"]
+    },
+    "types": ["node"]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts", "**/__tests__/*"]
+}

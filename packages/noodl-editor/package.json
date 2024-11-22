@@ -1,63 +1,89 @@
 {
-  "name": "noodl-editor",
-  "productName": "OpenNoodl",
+  "name": "noodl-editor-fork",
+  "productName": "OpenNoodl Fork",
   "description": "Full stack low code React app builder",
   "author": "The Low Code Foundation",
   "homepage": "https://thelowcodefoundation.com",
-  "version": "1.1.0",
-  "main": "src/main/main.js",
+  "version": "1.1.0-beta.1",
+  "main": "dist/main.js",
   "scripts": {
     "build": "npx ts-node -P ./tsconfig.build.json ./scripts/build.ts",
     "start": "webpack-dev-server --config=webpackconfigs/webpack.renderer.dev.js",
     "start:_dev": "electron . --dev",
     "test": "webpack-dev-server --config=webpackconfigs/webpack.test.js",
     "test:_start_electron": "electron test.js",
-    "test:ci": "webpack-cli --config=webpackconfigs/webpack.test-ci.js && electron test.js"
+    "test:ci": "webpack-cli --config=webpackconfigs/webpack.test-ci.js && electron test.js",
+    "pack": "electron-builder --dir",
+    "dist": "npm run build && electron-builder -mwl",
+    "dist:win": "set TARGET_PLATFORM=win32-x64 && npm run build && electron-builder -w",
+    "dist:mac": "set TARGET_PLATFORM=darwin-x64 && npm run build && electron-builder -m",
+    "dist:linux": "set TARGET_PLATFORM=linux-x64 && npm run build && electron-builder -l"
   },
   "build": {
-    "appId": "com.opennoodl.app",
-    "afterSign": "./build/macos-notarize.js",
+    "appId": "com.opennoodl.fork.app",
+    "files": [
+      "dist/**/*",
+      "build/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "../../dist",
+      "buildResources": "build"
+    },
     "mac": {
+      "target": ["dmg"],
       "hardenedRuntime": true,
       "entitlements": "build/entitlements.mac.plist",
+      "icon": "build/icon.icns",
       "extendInfo": {
         "LSMultipleInstancesProhibited": true,
-        "NSMicrophoneUsageDescription": "Allow OpenNoodl apps that you create and run to access the microphone?",
-        "NSCameraUsageDescription": "Allow OpenNoodl apps that you create and run to access the camera?"
+        "NSMicrophoneUsageDescription": "Allow OpenNoodl Fork apps that you create and run to access the microphone?",
+        "NSCameraUsageDescription": "Allow OpenNoodl Fork apps that you create and run to access the camera?"
       }
     },
     "win": {
-      "target": "nsis"
-    },
-    "nsis": {
-      "guid": "com.opennoodl.app"
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "msi",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "signingHashAlgorithms": null,
+      "signAndEditExecutable": false
     },
     "linux": {
-      "target": "deb"
+      "target": ["AppImage"],
+      "icon": "build/icons"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "msi": {
+      "oneClick": false,
+      "perMachine": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
     },
     "protocols": {
-      "name": "opennoodl",
+      "name": "noodl-protocol",
       "schemes": [
-        "opennoodl"
+        "noodl"
       ]
     },
-    "npmRebuild": false,
-    "files": [
-      "*.js",
-      "src",
-      "node_modules",
-      "!node_modules/monaco-editor",
-      "node_modules/monaco-editor/esm",
-      "node_modules/dugite",
-      "!test.js",
-      "!src/main/main.js",
-      "!src/main/src",
-      "!src/editor/src",
-      "!src/frames/viewer-frame/src",
-      "!src/shared"
-    ]
+    "npmRebuild": false
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.540.0",
+    "@aws-sdk/lib-storage": "^3.540.0",
+    "@aws-sdk/credential-provider-ini": "^3.540.0",
     "@electron/remote": "^2.1.2",
     "@jaames/iro": "^5.5.2",
     "@microsoft/fetch-event-source": "^2.0.1",
@@ -76,10 +102,11 @@
     "express": "^4.17.3",
     "highlight.js": "^11.5.1",
     "isbinaryfile": "^5.0.0",
+    "lodash": "^4.17.21",
     "md5": "^2.3.0",
     "md5-file": "^5.0.0",
     "mixpanel-browser": "^2.45.0",
-    "mkdirp": "0.5.1",
+    "mkdirp": "^0.5.6",
     "mkdirp-sync": "0.0.2",
     "monaco-editor": "^0.34.0",
     "react": "^17.0.2",
@@ -89,12 +116,12 @@
     "react-json-view": "^1.21.3",
     "react-rnd": "^10.3.7",
     "remarkable": "^2.0.1",
-    "s3": "git+https://github.com/noodlapp/node-s3-client.git",
+    "s3": "git+https://github.com/noodlapp/node-s3-client.git#master",
     "string.prototype.matchall": "^4.0.7",
     "underscore": "^1.13.6",
     "webpack": "^5.74.0",
     "websocket-stream": "^5.5.2",
-    "ws": "^8.9.0"
+    "ws": "^8.13.0"
   },
   "devDependencies": {
     "@babel/core": "^7.19.1",
